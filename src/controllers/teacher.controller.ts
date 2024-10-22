@@ -6,7 +6,7 @@ import { SALT_ROUNDS, TOKEN_EXPIRY } from '../config/constants.js';
 
 const prisma = new PrismaClient();
 
-export const signup = async (req, res) => {
+export const signup = async (req: any, res: any) => {
   try {
     console.log(req.body);
     const { name, email, password, phoneNumber } = req.body;
@@ -43,7 +43,7 @@ export const signup = async (req, res) => {
     // Generate token
     const token = jwt.sign(
       { id: teacher.id, email: teacher.email },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET || "",
       { expiresIn: TOKEN_EXPIRY }
     );
 
@@ -60,7 +60,7 @@ export const signup = async (req, res) => {
   }
 };
 
-export const signin = async (req, res) => {
+export const signin = async (req: any, res: any) => {
   try {
     const { email, password } = req.body;
 
@@ -83,7 +83,7 @@ export const signin = async (req, res) => {
 
     const token = jwt.sign(
       { id: teacher.id, email: teacher.email },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET || "",
       { expiresIn: TOKEN_EXPIRY }
     );
 
