@@ -1,6 +1,4 @@
-# ras-api
-
-## Overview
+## RAS-API
 
 `ras-api` is a RESTful API built with Node.js and Express, designed to interact with AWS services including RDS for database management and S3 for file storage. This API can be deployed on an EC2 instance, and it may utilize API Gateway for enhanced management and scalability.
 
