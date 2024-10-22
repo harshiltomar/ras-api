@@ -1,5 +1,7 @@
-import express from "express";
-import dotenv from "dotenv";
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import teacherRoutes from './routes/teacher.routes.js';
 
 // Load environment variables
 dotenv.config();
@@ -7,10 +9,19 @@ dotenv.config();
 // Initialize Express
 const app = express();
 
-// Middleware to parse JSON requests
+// Middleware
+app.use(cors());
 app.use(express.json());
 
-// Server
+// Routes
+app.use('/api/teacher', teacherRoutes);
+
+// Root route
+app.get('/', (req, res) => {
+  res.json({ message: 'Welcome to the API' });
+});
+
+// Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
