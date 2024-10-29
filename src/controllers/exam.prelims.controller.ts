@@ -36,7 +36,6 @@ export class PrelimsExamController {
     try {
       // Validate request body
       const validatedData = CreatePrelimsExamSchema.parse(req.body);
-      console.log('Validated data:', validatedData); // Log validated data
       // Create exam with validated data
       const exam = await prisma.exam.create({
         data: {
@@ -57,7 +56,7 @@ export class PrelimsExamController {
         },
         include: {
           prelimsAnswerKey: true, // Include prelimsAnswerKey in the response
-      },
+        },
       });
 
       res.status(201).json({
@@ -85,6 +84,9 @@ export class PrelimsExamController {
         where: {
           teacherId: req.teacher.id,
           category: 'Prelims',
+        },
+        include: {
+          prelimsAnswerKey: true, // Added this line to include answer keys
         },
         orderBy: {
           createdAt: 'desc',
@@ -171,6 +173,32 @@ export class PrelimsExamController {
       console.error('Error deleting prelims exam:', error);
       res.status(500).json({
         error: 'Failed to delete prelims exam',
+      });
+    }
+  }
+
+
+  static async getFreePrelimsExams(req: any, res: any) {
+    try {
+      const exams = await prisma.exam.findMany({
+        where: {
+          type: 'Free',
+          category: 'Prelims',
+        },
+        include: {
+          prelimsAnswerKey: true, // Added this line to include answer keys
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+
+      console.log(exams)
+      res.status(200).json({ exams });
+    } catch (error) {
+      console.error('Error fetching prelims exams:', error);
+      res.status(500).json({
+        error: 'Failed to fetch prelims exams',
       });
     }
   }
