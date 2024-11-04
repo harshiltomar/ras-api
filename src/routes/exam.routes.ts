@@ -6,6 +6,7 @@ import { MainsExamController } from '../controllers/exam.mains.controller';
 const router = express.Router();
 
 router.get('/prelims/free', PrelimsExamController.getFreePrelimsExams);
+router.get('/prelims/all/card', PrelimsExamController.getAllPrelimsExamsCard);
 router.post('/prelims', authenticateTeacher, PrelimsExamController.createPrelimsExam);
 router.get('/prelims', authenticateTeacher, PrelimsExamController.getTeacherPrelimsExams);
 router.get('/prelims/:id', authenticateTeacher, PrelimsExamController.getPrelimsExamById);

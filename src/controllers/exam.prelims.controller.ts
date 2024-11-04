@@ -3,6 +3,19 @@ import { z } from 'zod';
 
 const prisma = new PrismaClient();
 
+const PrelimsCardSchema = z.object({
+  title: z.string(),
+  category: z.string(),
+  duration: z.number(),
+  totalMarks: z.number(),
+  testType: z.string(),
+  subjects:  z.object({
+    subject: z.string(),
+    subtopics: z.string().array(),
+  }),
+  type: z.string()
+})
+
 // Validation schemas specific to Prelims exams
 const PrelimsQuestionSchema = z.object({
   question: z.string(),
@@ -195,6 +208,48 @@ export class PrelimsExamController {
 
       console.log(exams)
       res.status(200).json({ exams });
+    } catch (error) {
+      console.error('Error fetching prelims exams:', error);
+      res.status(500).json({
+        error: 'Failed to fetch prelims exams',
+      });
+    }
+  }
+
+  static async getAllPrelimsExamsCard(req: any, res: any){
+    // Not giving type here since type validation through zod already
+    const prelimCardArrayData = [];
+
+    try {
+      const exams = await prisma.exam.findMany({
+        where: {
+          category: 'Prelims',
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+
+      if(exams.length === 0){
+        res.status(200).json({
+          error: 'No exams found'
+        })
+      }
+
+      for(let i = 0; i < exams.length; i++){
+          const validatedData = PrelimsCardSchema.safeParse(exams[i]);
+          if(validatedData.error){
+            return res.status(500).json({
+              error: "Invalid exam data"
+            })
+          }
+          prelimCardArrayData.push(validatedData)
+      }
+
+      res.status(200).json({
+        prelimCardArrayData
+      });
+
     } catch (error) {
       console.error('Error fetching prelims exams:', error);
       res.status(500).json({
